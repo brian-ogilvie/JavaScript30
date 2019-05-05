@@ -25,7 +25,10 @@
 
     .panels {
       min-height: 100vh;
+      width: 100vw;
       overflow: hidden;
+      display: flex;
+      flex-flow: row nowrap;
     }
 
     .panel {
@@ -34,8 +37,10 @@
       color: white;
       text-align: center;
       align-items: center;
-      /* Safari transitionend event.propertyName === flex */
-      /* Chrome + FF transitionend event.propertyName === flex-grow */
+      flex: 1;
+      display: flex;
+      flex-flow: column nowrap;
+      justify-content: center;
       transition:
         font-size 0.7s cubic-bezier(0.61,-0.19, 0.7,-0.11),
         flex 0.7s cubic-bezier(0.61,-0.19, 0.7,-0.11),
@@ -56,6 +61,22 @@
       margin: 0;
       width: 100%;
       transition: transform 0.5s;
+      flex: 1 0 auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .panel > *:first-child {
+      transform: translateY(-100%);
+    }
+
+    .panel > *:last-child {
+      transform: translateY(100%);
+    }
+
+    .panel.open-active > *:last-child, .panel.open-active > *:first-child {
+      transform: translateY(0);
     }
 
     .panel p {
@@ -71,6 +92,7 @@
 
     .panel.open {
       font-size: 40px;
+      flex: 5;
     }
 
   </style>
@@ -105,6 +127,31 @@
   </div>
 
   <script>
+    const panels = Array.from(document.querySelectorAll('.panel'))
+    panels.forEach(panel => {
+      panel.addEventListener('click', toggleOpen)
+      panel.addEventListener('transitionend', toggleOpenActive)
+    })
+
+    function toggleOpen() {
+      if (Array.from(this.classList).includes('open')) {
+        this.classList.remove('open')
+        return
+      }
+      const thisIndex = panels.indexOf(this)
+      const others = [
+        ...panels.slice(0, thisIndex),
+        ...panels.slice(thisIndex + 1)
+      ]
+      others.forEach(panel => panel.classList.remove('open'))
+      this.classList.add('open')
+    }
+
+    function toggleOpenActive(e) {
+      if (e.propertyName.includes('flex')) {
+        this.classList.toggle('open-active')
+      }
+    }
 
   </script>
 
