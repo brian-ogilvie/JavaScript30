@@ -31,18 +31,6 @@
   input.addEventListener('change', displayMatches)
   input.addEventListener('keyup', displayMatches)
 
-  function handleChange() {
-    const children = Array.from(list.children)
-    children.forEach(child => child.remove())
-    if (!this.value) {return}
-    const filteredCities = findMatches(this.value, cities)
-    filteredCities.forEach(city => {
-      const li = document.createElement('li')
-      li.textContent = `${city.city}, ${city.state}`
-      list.append(li)
-    })
-  }
-
   function displayMatches() {
     const matchArray = findMatches(this.value, cities)
     const html = matchArray.map(place => {
