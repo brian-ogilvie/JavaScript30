@@ -20,17 +20,21 @@
       box-shadow: 10px 10px 0 rgba(0,0,0,0.1);
     }
 
-    .item {
+    .item, .top-row {
       display: flex;
       align-items: center;
       border-bottom: 1px solid #F1F1F1;
+    }
+
+    .top-row {
+      background-color: lightgray;
     }
 
     .item:last-child {
       border-bottom: 0;
     }
 
-    input:checked + p {
+    .item input:checked + p {
       background: #F9F9F9;
       text-decoration: line-through;
     }
@@ -57,6 +61,10 @@
 
   -->
   <div class="inbox">
+    <div class="top-row">
+      <input type="checkbox">
+      <p>Check All</p>
+    </div>
     <div class="item">
       <input type="checkbox">
       <p>This is an inbox layout.</p>
@@ -96,6 +104,50 @@
   </div>
 
 <script>
+  // slect DOM elements
+  const inbox = document.querySelector('.inbox');
+  const checkboxes = Array.from(inbox.querySelectorAll('.item > input[type="checkbox"]'));
+  const masterCheckbox = document.querySelector('.top-row > input[type="checkbox"]');
+  const checkAllMessage = document.querySelector('.top-row > p');
+
+  // add event listeners
+  checkboxes.forEach(checkbox => {
+    checkbox.addEventListener('click', handleClick);
+  });
+
+  masterCheckbox.addEventListener('click', handleMasterCheck);
+
+  // event handlers
+  function handleMasterCheck(e) {
+    const on = e.target.checked;
+    selectAll(on);
+  }
+
+  function handleClick(e) {
+    if (!e.shiftKey || !e.target.checked) { return; }
+    const i = checkboxes.indexOf(e.target);
+
+    const alreadyChecked = checkboxes.findIndex((box, index) => {
+      return index !== i && box.checked === true;
+    });
+
+    if (alreadyChecked === -1) { return; }
+    const begin = Math.min(i, alreadyChecked);
+    const end = Math.max(i, alreadyChecked);
+    const boxesToCheck = checkboxes.slice(begin, end + 1);
+    boxesToCheck.forEach(box => {
+      box.checked = true;
+    })
+  }
+
+  // other functions
+  function selectAll(on) {
+    checkboxes.forEach(box => {
+      box.checked = on;
+    });
+    checkAllMessage.textContent = on ? 'Uncheck All' : 'Check All';
+  }
+
 </script>
 </body>
 </html>
