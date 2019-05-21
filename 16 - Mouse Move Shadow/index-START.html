@@ -31,10 +31,34 @@
   h1 {
     text-shadow: 10px 10px 0 rgba(0,0,0,1);
     font-size: 100px;
+    /* backdrop-filter: blur(5px); */
   }
   </style>
 
 <script>
+  const hero = document.querySelector('.hero');
+  const text = hero.querySelector('h1');
+
+  function moveShadow(e) {
+    const {offsetWidth: width, offsetHeight: height} = hero;
+    let {offsetX: x, offsetY: y} = e;
+    const walk = 200;
+
+    if (this !== e.target) {
+      x = x + e.target.offsetLeft;
+      y = y + e.target.offsetTop;
+    }
+
+    const walkX = (x / width * walk) - (walk / 2);
+    const walkY = (y / height * walk) - (walk / 2);
+
+    text.style.textShadow = `${walkX}px ${walkY}px 4px rgba(255,0,255,.7),
+      ${walkX * -1 }px ${walkY}px 4px rgba(0,255,0,.7),
+      ${walkY}px ${walkX * -1}px 4px rgba(0,255,255,.7),
+      ${walkY}px ${walkX}px 4px rgba(0,0,255,.7)`;
+  }
+
+  hero.addEventListener('mousemove', moveShadow);
 </script>
 </body>
 </html>
