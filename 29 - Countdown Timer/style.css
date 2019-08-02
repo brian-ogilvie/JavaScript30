@@ -23,6 +23,34 @@ body {
   text-shadow: 4px 4px 0 rgba(0,0,0,0.05);
 }
 
+.cancel {
+  display: block;
+  margin: 0 auto;
+  opacity: 0;
+  text-transform: uppercase;
+  font-family: 'Inconsolata', monospace;
+  text-shadow: 4px 4px 0 rgba(0,0,0,0.05);
+  box-shadow: 4px 4px 0 rgba(0,0,0,0.05);
+  font-size: 3rem;
+  background: none;
+  color: white;
+  border: 2px solid white;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.cancel:hover {
+  background-color: white;
+  text-shadow: 2px 2px 0 rgba(0,0,0,0.05);
+  color: #478ed1;
+}
+
+.cancel.active {
+  opacity: 1;
+  transition-property: color, background-color, text-shadow;
+  transition-duration: .2s;
+}
+
 .timer {
   display: flex;
   min-height: 100vh;

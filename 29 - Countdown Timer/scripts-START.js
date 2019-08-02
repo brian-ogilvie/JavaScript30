@@ -1,23 +1,33 @@
 const display = document.querySelector('.display__time-left');
 const endTime = document.querySelector('.display__end-time');
 const buttons = document.querySelectorAll('[data-time]');
-let timeout;
+const cancel = document.querySelector('.cancel');
+let countdown;
 
 function timer(seconds) {
-  clearInterval(timeout);
+  clearInterval(countdown);
   const now = Date.now();
   const then = now + seconds * 1000;
   displayTimeRemaining(seconds);
   displayEndTime(then);
+  cancel.classList.add('active');
 
-  timeout = setInterval(() => {
+  countdown = setInterval(() => {
     const secondsRemaining = Math.round((then - Date.now()) / 1000);
     if (secondsRemaining < 0) {
-      clearInterval(timeout);
+      clearInterval(countdown);
       return;
     }
     displayTimeRemaining(secondsRemaining);
   }, 1000);
+}
+
+function stopTimer() {
+  clearInterval(countdown);
+  display.textContent = '';
+  endTime.textContent = '';
+  cancel.classList.remove('active');
+  document.title = 'Timer 0:00';
 }
 
 function displayTimeRemaining(secondsRemaining) {
@@ -50,3 +60,4 @@ function handleSubmit(e) {
 
 buttons.forEach(button => button.addEventListener('click', startTimer));
 document.customForm.addEventListener('submit', handleSubmit);
+cancel.addEventListener('click', stopTimer);
