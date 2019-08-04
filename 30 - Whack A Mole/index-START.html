@@ -8,12 +8,18 @@
 </head>
 <body>
 
-  <h1>Whack-a-mole!</h1>
+  <h1 class="main_title">Whack-a-mole!</h1>
+
+  <!-- <div class="timer">10</div> -->
+
+  <div class="achievement">
+    <h3 class="achievement__content">New High Score!!!</h3>
+  </div>
 
   <div class="dashboard">
     <button class="start" onClick="startGame()">Start!</button>
-    <h2>Score: <span class="score">0</span></h2>
     <h2>High Score: <span class="high_score">0</span></h2>
+    <h2>Score: <span class="score">0</span></h2>
   </div>
 
   <div class="game">
@@ -42,6 +48,9 @@
   const scoreBoard = document.querySelector('.score');
   const highScoreBoard = document.querySelector('.high_score');
   const moles = document.querySelectorAll('.mole');
+  const startButton = document.querySelector('.start');
+  // const timer = document.querySelector('.timer');
+  const achievement = document.querySelector('.achievement');
   
   let lastHole;
   let timeUp = true;
@@ -63,10 +72,7 @@
   }
 
   function peep() {
-    if (timeUp) {
-      setNewHighScore();
-      return;
-    };
+    if (timeUp) return;
     const time = randomTime(200, 1000);
     const hole = randomHole(holes);
     hole.classList.add('up', 'clickable');
@@ -76,15 +82,38 @@
     }, time);
   }
 
+  function resetGame() {
+    timeUp = true;
+    startButton.classList.remove('active');
+    startButton.textContent = 'Start!';
+    setNewHighScore();
+  }
+
+  function startTimer(seconds) {
+    let countdown = seconds;
+    startButton.textContent = countdown;
+    const timerInterval = setInterval(() => {
+      countdown -= 1;
+      startButton.textContent = countdown;
+      if (countdown <= 0) {
+        clearInterval(timerInterval);
+        resetGame();
+      }
+    }, 1000);
+  }
+
   function startGame() {
+    if (!timeUp) return;
     score = 0;
     scoreBoard.textContent = score;
+    startButton.classList.add('active');
     timeUp = false;
     peep();
-    setTimeout(() => timeUp = true, 10000);
+    startTimer(10);
   }
 
   function handleClick(e) {
+    if (timeUp) return;
     if (
       !e.isTrusted || // cheater
       !this.parentNode.classList.contains('clickable') // already clicked
@@ -99,8 +128,18 @@
     return prev ? parseInt(prev, 10) : 0;
   }
 
+  function showNewHighScore() {
+    achievement.classList.add('block');
+    setTimeout(() => achievement.classList.add('visible'), 1);
+    setTimeout(() => {
+      achievement.classList.remove('visible');
+      setTimeout(() => achievement.classList.remove('block'), 300);
+    }, 2200)
+  }
+
   function setNewHighScore() {
     if (score > highScore) {
+      showNewHighScore();
       localStorage.setItem('highScore', score);
       highScore = score;
       highScoreBoard.textContent = highScore;
